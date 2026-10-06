@@ -5,7 +5,10 @@
   <!-- Only this app's own files, Google's Firebase scripts and Rachel herself. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src https://script.google.com; connect-src 'self' https://*.googleapis.com https://www.gstatic.com; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
   <title>Rachel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- maximum-scale=1 stops iPhone zooming the whole app in when a text box is
+       tapped (it does for any box under 16px) and leaving it zoomed - the main
+       "moves around" complaint. Pinch-zoom still works (iOS ignores it for that). -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#6D7064">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
@@ -18,8 +21,13 @@
     :root { --bg: #6D7064; --card: #5B5D53; --gold: #F3E5AB; --text: #FFFFFF; --muted: #E5E5E5; --border: #7C7F72; }
     html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
-    body { padding-top: env(safe-area-inset-top); box-sizing: border-box; overflow: hidden; }
-    #rachel { display: block; width: 100%; height: 100%; border: 0; background: var(--bg); }
+    /* The app itself never scrolls, bounces or shifts - only Rachel's own page
+       inside the frame scrolls. Without this the whole app rubber-bands behind
+       Rachel and the status-bar padding made it a few pixels taller than the
+       screen, so it slid around under your thumb. */
+    html, body { position: fixed; inset: 0; overflow: hidden; overscroll-behavior: none; touch-action: manipulation; }
+    #rachel { position: absolute; left: 0; right: 0; top: env(safe-area-inset-top); bottom: 0;
+      width: 100%; height: calc(100% - env(safe-area-inset-top)); border: 0; background: var(--bg); display: block; }
     .bar {
       position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 10;
       background: var(--card); border: 1px solid var(--gold); border-radius: 12px; padding: 12px 14px;
