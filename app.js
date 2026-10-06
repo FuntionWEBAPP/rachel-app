@@ -96,8 +96,15 @@
 
   function initFirebase() {
     if (messaging || !firebaseReady || !pushSupported) return messaging;
-    firebase.initializeApp(CFG.firebase);
-    messaging = firebase.messaging();
+    try {
+      if (!firebase.apps.length) firebase.initializeApp(CFG.firebase);
+      messaging = firebase.messaging();
+    } catch (err) {
+      // An older iPhone (before iOS 16.4) or a browser without web push - the
+      // app still shows Rachel, just without pop-ups.
+      messaging = null;
+      return null;
+    }
     // A pop-up arriving while the app is open: iPhone does not show it, so show it here.
     messaging.onMessage(function (payload) {
       var n = (payload && payload.notification) || {};
