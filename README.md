@@ -14,10 +14,10 @@ private service-account key that lives only in Rachel's Script Properties.
 - `firebase-messaging-sw.js` - receives pop-ups while the app is closed. A reminder
   pop-up has Done / +1 hr buttons (Android and desktop; iPhone web apps do not show
   notification buttons) - a button opens Rachel at `?section=reminders&reminder=R...&act=done|snooze`
-  and Rachel does it with its own sign-in. A plain tap opens that reminder. A message
-  from Rachel (a function pack she approved, or one waiting on you) opens in her chat
-  (`?section=rachel&msg=M...`, always the manager view) and carries Open / Back to Needs
-  you buttons (`&act=open|hold`), handled the same way.
+  and Rachel does it with its own sign-in. A plain tap opens that reminder. A question
+  from Rachel opens in her chat (`?section=rachel&msg=M...`, always the manager view)
+  and carries an Open button (`&act=open`), handled the same way. Pack pop-ups are plain
+  pop-ups: a tap opens Review for Rachel or Reminders.
 - `config.js` - Rachel's URL and the Firebase web config (public).
 
 Install on iPhone (iOS 16.4+): open the site in Safari > Share > Add to Home Screen,

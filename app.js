@@ -31,14 +31,13 @@
 
   // ---- Load Rachel ----------------------------------------------------------
   function rachelSrc(view, section, reminder, act, msg) {
-    // A message from Rachel (a pack approved / waiting on you) lives in the
-    // manager view's chat, so it always opens there.
+    // A question from Rachel lives in the manager view's chat, so it always opens there.
     if (section === 'rachel') view = 'manager';
     var url = CFG.rachelUrl + '?view=' + (view === 'staff' ? 'staff' : 'manager') + '&app=1';
     if (section === 'rachel' && /^M\d{6,20}$/.test(msg || '')) {
-      // A tapped message pop-up (or its Open / Back to Needs you button): open THAT message.
+      // A tapped question pop-up (or its Open button): open THAT question.
       url += '&section=rachel&msg=' + msg;
-      if (act === 'open' || act === 'hold') url += '&act=' + act;
+      if (act === 'open') url += '&act=open';
     } else if (section === 'reminders') {
       url += '&section=reminders';
       // A tapped reminder pop-up (or its Done / +1 hr button): open THAT reminder.
@@ -51,7 +50,7 @@
   }
   var params = new URLSearchParams(location.search);
   frame.src = rachelSrc(read(KEY_VIEW) || 'manager', params.get('section'), params.get('reminder'), params.get('act'), params.get('msg'));
-  // Used once: a reload must not tick the same reminder (or press the same message button) again.
+  // Used once: a reload must not tick the same reminder (or press the same question's button) again.
   if ((params.get('reminder') || params.get('msg')) && history.replaceState) history.replaceState(null, '', location.pathname);
 
   // ---- Messages from the Rachel page ---------------------------------------
