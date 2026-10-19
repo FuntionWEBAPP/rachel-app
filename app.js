@@ -35,9 +35,9 @@
     if (section === 'rachel') view = 'manager';
     var url = CFG.rachelUrl + '?view=' + (view === 'staff' ? 'staff' : 'manager') + '&app=1';
     if (section === 'rachel' && /^M\d{6,20}$/.test(msg || '')) {
-      // A tapped question pop-up (or its Open button): open THAT question.
+      // A tapped question pop-up (or one of its buttons): open THAT question.
       url += '&section=rachel&msg=' + msg;
-      if (act === 'open') url += '&act=open';
+      if (act === 'open' || act === 'chase' || act === 'skip') url += '&act=' + act;
     } else if (section === 'reminders') {
       url += '&section=reminders';
       // A tapped reminder pop-up (or its Done / +1 hr button): open THAT reminder.

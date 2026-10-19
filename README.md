@@ -16,7 +16,8 @@ private service-account key that lives only in Rachel's Script Properties.
   notification buttons) - a button opens Rachel at `?section=reminders&reminder=R...&act=done|snooze`
   and Rachel does it with its own sign-in. A plain tap opens that reminder. A question
   from Rachel opens in her chat (`?section=rachel&msg=M...`, always the manager view)
-  and carries an Open button (`&act=open`), handled the same way. Pack pop-ups are plain
+  and carries up to two answer buttons - Draft chase / Not now / Open (`&act=chase|skip|open`,
+  never Confirm, which is only pressed inside Rachel) - handled the same way. Pack pop-ups are plain
   pop-ups: a tap opens Review for Rachel or Reminders.
 - `config.js` - Rachel's URL and the Firebase web config (public).
 
