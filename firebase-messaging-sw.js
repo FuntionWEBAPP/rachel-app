@@ -2,7 +2,8 @@
  * Rachel app service worker: receives pop-ups while the app is closed.
  * Firebase's SDK shows the notification (Rachel sends a "notification"
  * payload with fcm_options.link) and opens that link when it is tapped.
- * A reminder pop-up also carries Done / +1 hr buttons, handled below.
+ * A reminder pop-up also carries Done / +1 hr buttons, and a question from
+ * Rachel its answer buttons - both handled below.
  */
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
@@ -45,6 +46,18 @@ self.addEventListener('notificationclick', function (event) {
     if (!id) return;
     var url = self.registration.scope + '?section=reminders&reminder=' + id + '&act=' + event.action;
     event.waitUntil(openApp(url));
+    return;
+  }
+
+  // The buttons on a question from Rachel (Draft chase / Not now / Open -
+  // never Confirm, which is only pressed inside Rachel). Same rule as the
+  // reminder buttons: the app opens Rachel on that question with act=... and
+  // Rachel does it with its own sign-in.
+  if (event.action === 'open' || event.action === 'chase' || event.action === 'skip') {
+    event.notification.close();
+    var mid = /^M\d{6,20}$/.test(String(payload.messageId || '')) ? payload.messageId : '';
+    if (!mid) return;
+    event.waitUntil(openApp(self.registration.scope + '?section=rachel&msg=' + mid + '&act=' + event.action));
     return;
   }
 
