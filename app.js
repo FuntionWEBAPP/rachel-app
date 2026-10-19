@@ -30,13 +30,22 @@
   var firebaseReady = CFG.firebase && CFG.firebase.apiKey && CFG.firebase.apiKey !== 'FILL_ME' && CFG.vapidKey && CFG.vapidKey !== 'FILL_ME';
 
   // ---- Load Rachel ----------------------------------------------------------
-  function rachelSrc(view, section) {
+  function rachelSrc(view, section, reminder, act) {
     var url = CFG.rachelUrl + '?view=' + (view === 'staff' ? 'staff' : 'manager') + '&app=1';
-    if (section === 'reminders') url += '&section=reminders';
+    if (section === 'reminders') {
+      url += '&section=reminders';
+      // A tapped reminder pop-up (or its Done / +1 hr button): open THAT reminder.
+      if (/^R\d{6,20}$/.test(reminder || '')) {
+        url += '&reminder=' + reminder;
+        if (act === 'done' || act === 'snooze') url += '&act=' + act;
+      }
+    }
     return url;
   }
   var params = new URLSearchParams(location.search);
-  frame.src = rachelSrc(read(KEY_VIEW) || 'manager', params.get('section'));
+  frame.src = rachelSrc(read(KEY_VIEW) || 'manager', params.get('section'), params.get('reminder'), params.get('act'));
+  // Used once: a reload must not tick the same reminder again.
+  if (params.get('reminder') && history.replaceState) history.replaceState(null, '', location.pathname);
 
   // ---- Messages from the Rachel page ---------------------------------------
   function toRachel(msg) {

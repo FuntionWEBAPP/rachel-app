@@ -11,7 +11,10 @@ private service-account key that lives only in Rachel's Script Properties.
 
 - `index.html` / `app.js` - the shell; talks to Rachel only via `postMessage` with
   Apps Script's sandbox origin (`*-script.googleusercontent.com`).
-- `firebase-messaging-sw.js` - receives pop-ups while the app is closed.
+- `firebase-messaging-sw.js` - receives pop-ups while the app is closed. A reminder
+  pop-up has Done / +1 hr buttons (Android and desktop; iPhone web apps do not show
+  notification buttons) - a button opens Rachel at `?section=reminders&reminder=R...&act=done|snooze`
+  and Rachel does it with its own sign-in. A plain tap opens that reminder.
 - `config.js` - Rachel's URL and the Firebase web config (public).
 
 Install on iPhone (iOS 16.4+): open the site in Safari > Share > Add to Home Screen,
