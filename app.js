@@ -30,9 +30,16 @@
   var firebaseReady = CFG.firebase && CFG.firebase.apiKey && CFG.firebase.apiKey !== 'FILL_ME' && CFG.vapidKey && CFG.vapidKey !== 'FILL_ME';
 
   // ---- Load Rachel ----------------------------------------------------------
-  function rachelSrc(view, section, reminder, act) {
+  function rachelSrc(view, section, reminder, act, msg) {
+    // A message from Rachel (a pack approved / waiting on you) lives in the
+    // manager view's chat, so it always opens there.
+    if (section === 'rachel') view = 'manager';
     var url = CFG.rachelUrl + '?view=' + (view === 'staff' ? 'staff' : 'manager') + '&app=1';
-    if (section === 'reminders') {
+    if (section === 'rachel' && /^M\d{6,20}$/.test(msg || '')) {
+      // A tapped message pop-up (or its Open / Back to Needs you button): open THAT message.
+      url += '&section=rachel&msg=' + msg;
+      if (act === 'open' || act === 'hold') url += '&act=' + act;
+    } else if (section === 'reminders') {
       url += '&section=reminders';
       // A tapped reminder pop-up (or its Done / +1 hr button): open THAT reminder.
       if (/^R\d{6,20}$/.test(reminder || '')) {
@@ -43,9 +50,9 @@
     return url;
   }
   var params = new URLSearchParams(location.search);
-  frame.src = rachelSrc(read(KEY_VIEW) || 'manager', params.get('section'), params.get('reminder'), params.get('act'));
-  // Used once: a reload must not tick the same reminder again.
-  if (params.get('reminder') && history.replaceState) history.replaceState(null, '', location.pathname);
+  frame.src = rachelSrc(read(KEY_VIEW) || 'manager', params.get('section'), params.get('reminder'), params.get('act'), params.get('msg'));
+  // Used once: a reload must not tick the same reminder (or press the same message button) again.
+  if ((params.get('reminder') || params.get('msg')) && history.replaceState) history.replaceState(null, '', location.pathname);
 
   // ---- Messages from the Rachel page ---------------------------------------
   function toRachel(msg) {
